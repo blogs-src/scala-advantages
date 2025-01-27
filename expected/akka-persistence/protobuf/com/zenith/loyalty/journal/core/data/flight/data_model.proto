@@ -1,0 +1,477 @@
+syntax = "proto3";
+
+package com.zenith.loyalty.journal.core.data.flight.data_model;
+
+import "com/zenith/loyalty/journal/core/data/campaign/data_model.proto";
+import "com/zenith/loyalty/journal/core/data/common/data_model.proto";
+import "google/protobuf/wrappers.proto";
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+  scope: FILE
+  package_name: "com.zenith.loyalty.journal.core.data.flight.data_model"
+  flat_package: true
+  single_file: true
+  java_conversions: false
+  import: "infrastructure.journal.*"
+  lenses: true
+  getters: true
+  retain_source_code_info: false
+  no_default_values_in_constructor: false
+  preserve_unknown_fields: false
+  enum_value_naming: CAMEL_CASE
+  enum_strip_prefix: false
+  scala3_sources: true
+};
+
+message Image {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  google.protobuf.StringValue imageKey = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+}
+
+message CarouselCard {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  Image logo = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  Image banner = 2 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  google.protobuf.StringValue carouselCopy = 3;
+  google.protobuf.StringValue disclosure = 4 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  google.protobuf.StringValue trackingPixelUrl = 5;
+
+  google.protobuf.StringValue shopNowCtaUrl = 6;
+}
+
+message Interstitial {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  google.protobuf.StringValue title = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  google.protobuf.StringValue body = 2 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  Image imageWeb = 3 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  Image imageMobile = 4 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  google.protobuf.StringValue callToActionLabel = 5;
+  google.protobuf.StringValue callToActionUrl = 6;
+  google.protobuf.StringValue disclosure = 7 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  google.protobuf.StringValue trackingPixelUrl = 8;
+
+  google.protobuf.StringValue shopNowCtaUrl = 9;
+}
+
+message Tile {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  google.protobuf.StringValue title = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  google.protobuf.StringValue body = 2 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  Image icon = 3 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  google.protobuf.StringValue callToActionLabel = 4;
+  google.protobuf.StringValue callToActionUrl = 5;
+  google.protobuf.StringValue disclosure = 6;
+  google.protobuf.StringValue trackingPixelUrl = 7;
+
+  google.protobuf.StringValue shopNowCtaUrl = 8;
+}
+
+message RewardCap {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  int64 maxRewardsPerFlight = 1;
+  com.zenith.loyalty.journal.core.data.common.data_model.Amount maxAmountPerTransaction = 2 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  com.zenith.loyalty.journal.core.data.common.data_model.Amount maxAmountPerCustomer = 3 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  int64 maxRewardsPerCustomer = 4;
+}
+
+// message Flight {
+//   option (scalapb.message).extends = "JournalSerializable";
+
+//   google.protobuf.StringValue campaignId = 1 [
+//     (scalapb.field).no_box = true,
+//     (scalapb.field).required = true
+//   ];
+//   google.protobuf.StringValue name = 2 [
+//     (scalapb.field).no_box = true,
+//     (scalapb.field).required = true
+//   ];
+//   google.protobuf.StringValue userId = 3 [
+//     (scalapb.field).no_box = true,
+//     (scalapb.field).required = true
+//   ];
+//   FlightBudget budget = 4 [
+//     (scalapb.field).no_box = true,
+//     (scalapb.field).required = true
+//   ];
+//   google.protobuf.StringValue targetCriteriaId = 5;
+
+//   IncentiveConfiguration incentiveConfigurationDirectOffer_old = 6;
+
+//   AdSetup adSetup = 7 [
+//     (scalapb.field).no_box = true,
+//     (scalapb.field).required = true
+//   ];
+
+//   IncentiveConfigurationType incentiveConfiguration = 8;
+// }
+
+message FlightBudget {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  com.zenith.loyalty.journal.core.data.common.data_model.Amount totalBudget = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  com.zenith.loyalty.journal.core.data.common.data_model.Amount averageBudget = 2 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  MeasureAverageBudgetOptional measureAverageBudget = 3;
+}
+
+message IncentiveConfiguration {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  PromotionDetails promotionDetails = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  TargetingCriteria targetingCriteria = 2 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  MerchantDetails merchantDetails = 3;
+  RewardDetails rewardDetails = 4 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  RewardCap rewardCap = 5 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  com.zenith.loyalty.journal.core.data.common.data_model.Amount purchasesMinimum = 6 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  SpendTypeOptional spendType = 7;
+  ConversionCriteriaOptional conversionCriteria = 8;
+}
+
+message AdSetupOptional {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  AdSetup value = 1;
+}
+
+message AdSetup {
+  oneof sealed_value {
+    Tile tile = 1;
+    Interstitial interstitial = 2;
+    CarouselCard carouselCard = 3;
+  }
+}
+
+message PromotionDetails {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  google.protobuf.StringValue promotionName = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  com.zenith.loyalty.journal.core.data.campaign.data_model.Duration duration = 2 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+}
+
+message TargetingCriteria {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  google.protobuf.StringValue targetGroupName = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  com.zenith.loyalty.journal.core.data.campaign.data_model.Duration duration = 2 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+}
+
+message MerchantDetails {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  repeated google.protobuf.StringValue merchantNames = 1;
+  repeated google.protobuf.StringValue merchantCategories = 2;
+}
+
+message RewardDetails {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  google.protobuf.StringValue rewardMessage = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  RewardType rewardType = 2 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+}
+
+message FlatAmount {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  com.zenith.loyalty.journal.core.data.common.data_model.Amount customerAmount = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  com.zenith.loyalty.journal.core.data.common.data_model.Amount commissionAmount = 2 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+}
+
+message Cashback {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  double customerPercentage = 1;
+  double commissionPercentage = 2;
+}
+
+message RewardType {
+  oneof sealed_value {
+    Cashback cashback = 1;
+    FlatAmount flatAmount = 3;
+  }
+}
+
+message MeasureAverageBudgetOptional {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  MeasureAverageBudget value = 1;
+}
+
+enum MeasureAverageBudget {
+  PER_DAY = 0;
+  PER_WEEK = 1;
+  PER_MONTH = 2;
+}
+
+message ConversionCriteriaOptional {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  ConversionCriteria value = 1;
+}
+
+enum ConversionCriteria {
+  REQUIRED_CLICK_TO_ACTIVATE = 0;
+  REQUIRE_IMPRESSION = 1;
+  NO_INTERACTION_NEEDED = 2;
+}
+
+message SpendTypeOptional {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  SpendType value = 1;
+}
+
+enum SpendType {
+  ONLINE = 0;
+  IN_STORE = 1;
+  ONLINE_OR_IN_STORE = 2;
+}
+
+message FlightTypeOptional {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  FlightType value = 1;
+}
+
+enum FlightType {
+  DIRECT_OFFER = 0;
+  ONLINE_AFFILIATE_OFFER = 1;
+}
+
+message FlightStatusOptional {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  FlightStatus value = 1;
+}
+
+enum FlightStatus {
+  ACTIVE = 0;
+  ENDED = 1;
+}
+
+message IncentiveConfigurationTypeOptional {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  IncentiveConfigurationType value = 1;
+}
+
+message IncentiveConfigurationType {
+  oneof sealed_value {
+    IncentiveConfiguration direct_offer = 1;
+    IncentiveConfigurationOnlineAffiliateOffer online_affiliate_offer = 2;
+  }
+}
+
+message IncentiveConfigurationOnlineAffiliateOffer {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  PromotionDetails promotionDetails = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  TargetingCriteria targetingCriteria = 2 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  MerchantDetailsOnlineAffiliateOffer merchantDetails = 3;
+  RewardDetailsOnlineAffiliateOffer rewardDetails = 4 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  RewardCap rewardCap = 5 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  com.zenith.loyalty.journal.core.data.common.data_model.Amount purchasesMinimum = 6 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  SpendTypeOptional spendType = 7;
+  ConversionCriteriaOptional conversionCriteria = 8;
+}
+
+message MerchantDetailsOnlineAffiliateOffer {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  google.protobuf.StringValue merchantName = 1
+   [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  google.protobuf.StringValue eventType = 2
+   [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+}
+
+message RewardDetailsOnlineAffiliateOffer {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  google.protobuf.StringValue rewardMessage = 1
+   [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  RewardTypeOnlineAffiliateOffer rewardType = 2 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+}
+
+message RewardTypeOnlineAffiliateOfferOptional {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  RewardTypeOnlineAffiliateOffer value = 1;
+}
+
+message RewardTypeOnlineAffiliateOffer {
+  oneof sealed_value {
+    StandardPercent standardPercent = 1;
+    StandardAmount standardAmount = 2;
+    PercentByCategoryListCase percentByCategoryList = 3;
+    AmountByCategoryListCase amountByCategoryList = 4;
+  }
+}
+
+message StandardPercent {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  double customerPercentage = 1;
+}
+
+message StandardAmount {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  com.zenith.loyalty.journal.core.data.common.data_model.Amount customerAmount = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+}
+
+message PercentByCategoryListCase {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  repeated PercentByCategoryList values = 1;
+}
+
+message AmountByCategoryListCase{
+  option (scalapb.message).extends = "JournalSerializable";
+
+  repeated AmountByCategoryList values = 1;
+}
+
+message PercentByCategoryList {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional categories = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+
+  double customerPercentage = 2;
+}
+
+message AmountByCategoryList {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional categories = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  com.zenith.loyalty.journal.core.data.common.data_model.Amount customerAmount = 2 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+}

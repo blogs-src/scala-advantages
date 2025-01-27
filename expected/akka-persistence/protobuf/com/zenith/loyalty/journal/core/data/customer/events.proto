@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package com.zenith.loyalty.journal.core.data.customer.events;
+
+import "com/zenith/loyalty/journal/core/data/customer/data_model.proto";
+import "com/zenith/loyalty/journal/core/data/reward/data_model.proto";
+import "google/protobuf/wrappers.proto";
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+  scope: FILE
+  package_name: "com.zenith.loyalty.journal.core.data.customer.events"
+  flat_package: true
+  single_file: true
+  java_conversions: false
+  import: "infrastructure.journal.*"
+  preamble: "sealed trait Event extends JournalSerializable"
+  lenses: true
+  getters: true
+  retain_source_code_info: false
+  no_default_values_in_constructor: false
+  preserve_unknown_fields: false
+  enum_value_naming: CAMEL_CASE
+  enum_strip_prefix: false
+  scala3_sources: true
+};
+
+message OptInAdded {
+  option (scalapb.message).extends = "Event";
+
+  com.zenith.loyalty.journal.core.data.customer.data_model.OptInData optIn = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+}
+
+message RewardAdded {
+  option (scalapb.message).extends = "Event";
+
+  com.zenith.loyalty.journal.core.data.reward.data_model.Reward value = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  google.protobuf.StringValue fId = 2 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+}
+
+message DirectRewardAdded {
+  option (scalapb.message).extends = "Event";
+
+  com.zenith.loyalty.journal.core.data.reward.data_model.Reward value = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  google.protobuf.StringValue fId = 2 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+}

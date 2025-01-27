@@ -1,0 +1,611 @@
+object CategoryDataModel:
+
+    sealed trait Model extends CborSerializable
+
+    case class Category(
+                       categoryId: Option[String],
+                       name: String,
+                       rates: Option[Seq[CategoryPartnerRate]]) extends Model
+
+    case class CategoryPartnerRate(
+                                  partner: Option[String],
+                                  plan: Option[String],
+                                  isBlacklisted: Option[Boolean],
+                                  partnerEarnLimit: Option[Int],
+                                  partnerRate: BigDecimal) extends Model
+
+    case class CategoryRate(
+                           earnLimit: Option[Int],
+                           earnRate: BigDecimal,
+                           blacklisted: Boolean,
+                           description: Option[String]) extends Model
+
+    case class CategoryInfo(
+                           categoryId: String,
+                           name: String,
+                           active: Boolean) extends Model
+
+    case class Rate(
+                   earnLimit: Option[Int],
+                   earnRate: BigDecimal,
+                   isBlacklisted: Boolean) extends Model
+
+    object Rate:
+
+        def fromCategoryPartnerRate(categoryPartnerRate: CategoryPartnerRate): Rate = Rate(
+          categoryPartnerRate.partnerEarnLimit,
+          categoryPartnerRate.partnerRate,
+          categoryPartnerRate.isBlacklisted.getOrElse(false)
+        )
+
+        def toCategoryPartnerRate(programId: String, planId: String, rate: Rate): CategoryPartnerRate =
+          CategoryPartnerRate(
+            Some(programId),
+            Some(planId),
+            Some(rate.isBlacklisted),
+            rate.earnLimit,
+            rate.earnRate
+          )
+
+    case class CategoryUpdate(
+                             name: String,
+                             rates: Option[Seq[CategoryPartnerRate]]) extends Model
+
+object MccDataModel:
+
+    sealed trait Model extends CborSerializable
+
+    case class Mcc(
+                  mccId: String,
+                  name: String,
+                  category: Option[String],
+                  partnersRate: Option[Seq[MccPartnerRate]]) extends Model
+
+    case class MccUpdate(
+                        name: String,
+                        category: Option[String],
+                        partnersRate: Option[Seq[MccPartnerRate]]) extends Model
+
+    case class MccPartnerRate(
+                             partner: Option[String],
+                             isBlacklisted: Option[Boolean],
+                             rates: Option[Seq[MccPlanRate]]) extends Model
+
+    case class MccPlanRate(
+                          plan: Option[String],
+                          partnerEarnLimit: Option[Int],
+                          partnerRate: BigDecimal,
+                          isBlacklisted: Option[Boolean]) extends Model
+
+    case class MccRate(
+                      earnLimit: Option[Int],
+                      earnRate: BigDecimal,
+                      blacklisted: Boolean,
+                      category: Option[String],
+                      description: Option[String]) extends Model
+
+    case class ProgramRate(isBlacklisted: Option[Boolean], programRates: Map[String, Rate]) extends Model
+
+    case class Rate(earnLimit: Option[Int], earnRate: BigDecimal, isBlacklisted: Option[Boolean]) extends Model
+
+    object Rate:
+
+        def fromMccPartnerRate
+          (partnerRate: MccPlanRate)
+          : Rate = Rate(partnerRate.partnerEarnLimit, partnerRate.partnerRate, partnerRate.isBlacklisted)
+
+        def toMccPlanRate
+          (planId: String, rate: Rate)
+          : MccPlanRate = MccPlanRate(Some(planId), rate.earnLimit, rate.earnRate, rate.isBlacklisted)
+
+
+object MerchantDataModel:
+
+    sealed trait Model extends CborSerializable
+
+    val COUNTRY_DEFAULT = "Default"
+    val CITY_DEFAULT = "Default"
+
+    case class Merchant(merchantId: String, name: String, rates: Option[Seq[MerchantPartnerRate]]) extends Model
+
+    case class MerchantUpdate(name: String, rates: Option[Seq[MerchantPartnerRate]]) extends Model
+
+    case class MerchantPartnerRate(
+                                  partner: Option[String],
+                                  plan: Option[String],
+                                  isBlacklisted: Option[Boolean],
+                                  partnerLimit: Option[Int],
+                                  partnerRates: Seq[MerchantLocatedRate]) extends Model
+
+    case class MerchantLocatedRate(country: Option[String], city: Option[String], rate: BigDecimal) extends Model
+
+    case class MerchantRate
+      (earnLimit: Option[Int], earnRate: BigDecimal, blacklisted: Boolean, description: Option[String]) extends Model
+
+    case class Rate(
+                   merchantId: String,
+                   name: String,
+                   programId: String,
+                   planId: String,
+                   country: String,
+                   city: String,
+                   rate: BigDecimal,
+                   blacklisted: Boolean,
+                   earnLimit: Option[Int],
+                   active: Boolean) extends Model
+
+    case class PartnerDataRate(limit: Option[Int], isBlacklisted: Boolean, rates: Map[String, Map[String, BigDecimal]])
+        extends Model
+
+    object PartnerDataRate:
+
+        def fromMerchantPartnerRate(merchantPartnerRate: MerchantPartnerRate): PartnerDataRate = PartnerDataRate(
+          merchantPartnerRate.partnerLimit,
+          merchantPartnerRate.isBlacklisted.getOrElse(false),
+          merchantPartnerRate.partnerRates.groupBy(_.country.getOrElse(COUNTRY_DEFAULT)).map {
+            case (country, cityRate) =>
+              country -> cityRate.map {
+                r => r.city.getOrElse(CITY_DEFAULT) -> r.rate
+              }.toMap
+          }
+        )
+
+
+object ProgramDataModel:
+
+    sealed trait Model extends CborSerializable
+
+    case class Program(
+                      programId: String,
+                      name: String,
+                      baseCurrency: String,
+                      timeZone: Option[String],
+                      rates: Option[Seq[PlanRate]]) extends Model
+
+    case class ProgramUpdate(
+                        name: String,
+                        baseCurrency: String,
+                        timeZone: Option[String],
+                        rates: Option[Seq[PlanRate]]) extends Model
+
+    case class PlanRate(
+                       planId: String,
+                       planName: Option[String],
+                       earnLimit: Option[Int],
+                       localRate: BigDecimal,
+                       localAccCode: String,
+                       internationalRate: BigDecimal,
+                       internationalAccCode: String,
+                       revPointsProgram: Boolean,
+                       burnRate: Option[BigDecimal],
+                       burnMinAmount: Option[Int],
+                       burnIncrements: Option[Int]) extends Model
+
+    case class Rate(
+                   earnLimit: Option[Int],
+                   localRate: BigDecimal,
+                   localAccCode: Option[String],
+                   internationalRate: BigDecimal,
+                   internationalAccCode: Option[String],
+                   revPointsProgram: Boolean,
+                   planName: Option[String],
+                   burnRate: Option[BigDecimal],
+                   burnMinAmount: Option[Int],
+                   burnIncrements: Option[Int]) extends Model
+
+    case class ProgramRate(
+                          earnLimit: Option[Int],
+                          localRate: BigDecimal,
+                          localAccCode: String,
+                          internationalRate: BigDecimal,
+                          internationalAccCode: String,
+                          revPointsProgram: Boolean,
+                          planName: Option[String],
+                          timeZone: Option[String],
+                          burnRate: Option[BigDecimal],
+                          burnMinAmount: Option[Int],
+                          burnIncrements: Option[Int]) extends Model
+
+    object Rate:
+
+        def fromPlanRate(planRate: PlanRate): Rate = Rate(
+          planRate.earnLimit,
+          planRate.localRate,
+          Some(planRate.localAccCode),
+          planRate.internationalRate,
+          Some(planRate.internationalAccCode),
+          planRate.revPointsProgram,
+          planRate.planName,
+          planRate.burnRate,
+          planRate.burnMinAmount,
+          planRate.burnIncrements
+        )
+
+        def toPlanRate(plan: String, rate: Rate): PlanRate = PlanRate(
+          plan,
+          rate.planName,
+          rate.earnLimit,
+          rate.localRate,
+          rate.localAccCode.getOrElse(""),
+          rate.internationalRate,
+          rate.internationalAccCode.getOrElse(""),
+          rate.revPointsProgram,
+          rate.burnRate,
+          rate.burnMinAmount,
+          rate.burnIncrements
+        )
+
+        def toProgramRate(rate: Rate, timeZone: Option[String]): ProgramRate = ProgramRate(
+          rate.earnLimit,
+          rate.localRate,
+          rate.localAccCode.getOrElse(""),
+          rate.internationalRate,
+          rate.internationalAccCode.getOrElse(""),
+          rate.revPointsProgram,
+          rate.planName,
+          timeZone,
+          rate.burnRate,
+          rate.burnMinAmount,
+          rate.burnIncrements
+        )
+
+        def fromProgramRate(programRate: ProgramRate): Rate = Rate(
+          programRate.earnLimit,
+          programRate.localRate,
+          Some(programRate.localAccCode),
+          programRate.internationalRate,
+          Some(programRate.internationalAccCode),
+          programRate.revPointsProgram,
+          programRate.planName,
+          programRate.burnRate,
+          programRate.burnMinAmount,
+          programRate.burnIncrements
+        )
+
+
+object PointsDataModel:
+
+    sealed trait Model extends CborSerializable
+
+    case class Points(
+                     points: BigDecimal,
+                     partnerPoints: BigDecimal,
+                     estimatedPartnerPoints: BigDecimal,
+                     isBlacklisted: Option[Boolean],
+                     loyaltyId: Option[String],
+                     customerLimit: Option[Int]) extends Model
+
+    object Points:
+        val LIMIT_OPERATIONS = 5
+
+    case class PointsBalanceChanged(
+                                   accountId: String,
+                                   balance: BigDecimal,
+                                   previousBalance: BigDecimal,
+                                   limitPeriod: Option[String],
+                                   pointsOperation: Operation,
+                                   eventDate: Option[Date]) extends Model
+
+    case class Adjustment(
+                         adjustmentType: OperationType,
+                         pointsAmount: BigDecimal,
+                         description: String) extends Model
+
+    case class PromotionEarning(pointsAmount: BigDecimal, description: String) extends Model
+
+    enum OperationType extends loyalty.infrastructure.CborSerializable:
+        case Earn, Burn
+
+    enum EarnType extends loyalty.infrastructure.CborSerializable:
+        case Adjustment, Pos, Homecoming, Fx, Promotion, Referral, Access
+
+    enum BurnType extends loyalty.infrastructure.CborSerializable:
+        case Adjustment, Redemption, CashBack, Payment, Category, Mcc, Merchant, Access
+
+    case class Operation(
+                        operationId: Option[String],
+                        amount: BigDecimal,
+                        transaction: Option[String],
+                        previousPoints: BigDecimal,
+                        description: Option[String],
+                        operationDate: Date,
+                        isInternational: Option[Boolean],
+                        agent: Option[String],
+                        operationType: OperationType,
+                        earnType: Option[EarnType],
+                        burnType: Option[BurnType],
+                        campaignCode: Option[String],
+                        campaignBonus: Option[Boolean],
+                        details: Seq[OperationDetail],
+                        transactionAmount: Option[BigDecimal],
+                        transactionCurrency: Option[String],
+                        marketComplianceAmount: Option[BigDecimal],
+                        marketComplianceCurrency: Option[String],
+                        reasonId: Option[String],
+                        isRevPoints: Option[Boolean],
+                        qualifiers: Option[PointsQualifier]) extends Model
+
+    case class PointsQualifier(
+                              programId: Option[String],
+                              planId: Option[String],
+                              mccId: Option[String],
+                              merchantId: Option[String],
+                              merchantName: Option[String],
+                              categoryId: Option[String],
+                              extTransactionId: Option[String]) extends Model
+
+    case class OperationDetail(
+                              amount: BigDecimal,
+                              description: Option[String],
+                              earnType: EarnDetailType,
+                              qualifier: Option[String],
+                              rate: Option[BigDecimal] = None) extends Model
+
+    enum EarnDetailType extends loyalty.infrastructure.CborSerializable:
+        case Program, Mcc, Merchant, Category, MccLimit, MerchantLimit, CategoryLimit, CustomerLimit, ProgramLimit
+
+    object EarnDetailType:
+
+        val addTypes: Seq[EarnDetailType] = Seq(
+          Mcc,
+          Category,
+          Merchant,
+          Program
+        )
+
+        val subsTypes: Seq[EarnDetailType] = Seq(
+          MccLimit,
+          CategoryLimit,
+          MerchantLimit,
+          ProgramLimit,
+          CustomerLimit
+        )
+
+    case class PartnerAdjustment(
+                                programId: String,
+                                loyaltyAccount: String,
+                                adjustmentType: OperationType,
+                                code: String,
+                                description: String,
+                                points: BigDecimal,
+                                rate: Option[BigDecimal],
+                                firstName: Option[String],
+                                lastName: Option[String]) extends Model
+
+    case class AccountHistoryStatus(
+                                   blocked: Boolean,
+                                   agentId: Option[String],
+                                   date: Date) extends Model
+
+    case class OrderReserve(
+                           pointsAmount: BigDecimal,
+                           planId: String,
+                           flowId: String,
+                           operationDate: Date,
+                           transactionAmount: BigDecimal,
+                           transactionCurrency: String,
+                           reasonId: String,
+                           programId: String,
+                           burnRate: BigDecimal,
+                           description: Option[String]) extends Model
+
+    case class ReserveResponse(pointsBalance: BigDecimal) extends Model
+
+    enum AccountPointStatus extends loyalty.infrastructure.CborSerializable:
+        case Active, Fraud, Blocked
+
+    sealed trait PointOperation:
+        def amount: BigDecimal
+
+        def transaction: Option[String]
+
+        def previousPoints: BigDecimal
+
+        def description: Option[String]
+
+        def agent: Option[String]
+
+        def operationDate: Date
+
+        def toOperation: Operation
+
+    case class PointOperationAward(
+                                amount: BigDecimal,
+                                transaction: Option[String],
+                                previousPoints: BigDecimal,
+                                description: Option[String],
+                                agent: Option[String],
+                                earnType: EarnType,
+                                operationDate: Date,
+                                isInternational: Option[Boolean],
+                                campaign: Option[String],
+                                campaignBonus: Option[Boolean],
+                                details: Seq[PointOperationAwardDetail],
+                                transactionAmount: Option[BigDecimal],
+                                transactionCurrency: Option[String],
+                                marketComplianceAmount: Option[BigDecimal],
+                                marketComplianceCurrency: Option[String],
+                                reasonId: Option[String]) extends PointOperation:
+
+        def toOperation: Operation = Operation(None,
+                                               amount,
+                                               transaction,
+                                               previousPoints,
+                                               description,
+                                               operationDate,
+                                               isInternational,
+                                               agent,
+                                               OperationType.Earn,
+                                               Some(earnType),
+                                               None,
+                                               campaign,
+                                               campaignBonus,
+                                               details.map {
+                                                 PointOperationAwardDetail.toOperationDetail
+                                               },
+                                               transactionAmount,
+                                               transactionCurrency,
+                                               marketComplianceAmount,
+                                               marketComplianceCurrency,
+                                               reasonId,
+                                               None,
+                                               None
+                                              )
+
+    case class PointOperationClaim(
+                                amount: BigDecimal,
+                                transaction: Option[String],
+                                previousPoints: BigDecimal,
+                                description: Option[String],
+                                agent: Option[String],
+                                burnType: BurnType,
+                                operationDate: Date,
+                                isInternational: Option[Boolean],
+                                campaign: Option[String],
+                                campaignBonus: Option[Boolean],
+                                details: Seq[PointOperationAwardDetail],
+                                transactionAmount: Option[BigDecimal],
+                                transactionCurrency: Option[String],
+                                marketComplianceAmount: Option[BigDecimal],
+                                marketComplianceCurrency: Option[String],
+                                reasonId: Option[String]) extends PointOperation:
+
+        def toOperation: Operation = Operation(None,
+                                               -amount,
+                                               transaction,
+                                               previousPoints,
+                                               description,
+                                               operationDate,
+                                               isInternational,
+                                               agent,
+                                               OperationType.Burn,
+                                               None,
+                                               Some(burnType),
+                                               campaign,
+                                               campaignBonus,
+                                               details.map {
+                                                 PointOperationAwardDetail.toOperationDetail
+                                               },
+                                               transactionAmount,
+                                               transactionCurrency,
+                                               marketComplianceAmount,
+                                               marketComplianceCurrency,
+                                               reasonId,
+                                               None,
+                                               None
+                                              )
+
+    case class PointOperationAwardDetail(
+                                        amount: BigDecimal,
+                                        description: Option[String],
+                                        earnType: EarnDetailType,
+                                        qualifier: Option[String],
+                                        rate: Option[BigDecimal])
+
+    object PointOperationAwardDetail:
+
+        def toOperationDetail(pointOperation: PointOperationAwardDetail): OperationDetail = OperationDetail(
+          pointOperation.amount,
+          pointOperation.description,
+          pointOperation.earnType,
+          pointOperation.qualifier,
+          pointOperation.rate
+        )
+
+        def fromOperationDetail(operationDetail: OperationDetail): PointOperationAwardDetail =
+          PointOperationAwardDetail(
+            operationDetail.amount,
+            operationDetail.description,
+            operationDetail.earnType,
+            operationDetail.qualifier,
+            operationDetail.rate
+          )
+
+    case class PointOperationConsume(
+                                  amount: BigDecimal,
+                                  transaction: Option[String],
+                                  previousPoints: BigDecimal,
+                                  description: Option[String],
+                                  agent: Option[String],
+                                  operationDate: Date,
+                                  isInternational: Option[Boolean],
+                                  burnType: BurnType,
+                                  details: Seq[PointOperationAwardDetail],
+                                  transactionAmount: Option[BigDecimal],
+                                  transactionCurrency: Option[String],
+                                  marketComplianceAmount: Option[BigDecimal],
+                                  marketComplianceCurrency: Option[String],
+                                  reasonId: Option[String]) extends PointOperation:
+
+        def toOperation: Operation = Operation(None,
+                                               amount,
+                                               transaction,
+                                               previousPoints,
+                                               description,
+                                               operationDate,
+                                               None,
+                                               agent,
+                                               OperationType.Burn,
+                                               None,
+                                               Some(burnType),
+                                               None,
+                                               None,
+                                               details.map {
+                                                 PointOperationAwardDetail.toOperationDetail
+                                               },
+                                               transactionAmount,
+                                               transactionCurrency,
+                                               marketComplianceAmount,
+                                               marketComplianceCurrency,
+                                               reasonId,
+                                               None,
+                                               None
+                                              )
+
+    // Limits related value object
+    case class Limits(
+                     earned: Map[String, BigDecimal],
+                     mccEarns: Map[String, Map[String, BigDecimal]],
+                     merchantEarns: Map[String, Map[String, BigDecimal]],
+                     categoryEarns: Map[String, Map[String, BigDecimal]],
+                     programEarns: Map[String, Map[String, BigDecimal]])
+
+    case class LimitAdjustment(
+                              limit: LimitType,
+                              period: Option[String],
+                              qualifier: String,
+                              pointsAmount: BigDecimal)
+
+    enum LimitType extends loyalty.infrastructure.CborSerializable:
+        case Customer, Mcc, Category, Merchant, Program
+
+        def limitTypeFromEarnType(earnDetailType: EarnDetailType): LimitType =
+          if earnDetailType.equals(EarnDetailType.Mcc) || earnDetailType.equals(EarnDetailType.MccLimit) then
+              Mcc
+          else if
+            earnDetailType.equals(EarnDetailType.Merchant) || earnDetailType.equals(EarnDetailType.MerchantLimit)
+          then
+              Merchant
+          else if
+            earnDetailType.equals(EarnDetailType.Category) || earnDetailType.equals(EarnDetailType.CategoryLimit)
+          then
+              Category
+          else if earnDetailType.equals(EarnDetailType.Program) || earnDetailType.equals(EarnDetailType.ProgramLimit)
+          then
+              Program
+          else
+              Customer
+
+    // Hold
+    case class HoldOperation(
+                            amount: BigDecimal,
+                            transaction: String,
+                            operationDate: Date,
+                            transactionAmount: Option[BigDecimal],
+                            transactionCurrency: Option[String],
+                            reasonId: Option[String],
+                            programId: Option[String],
+                            planId: Option[String],
+                            burnRate: Option[BigDecimal],
+                            previousBalance: BigDecimal,
+                            description: Option[String])

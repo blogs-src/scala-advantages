@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+package com.zenith.loyalty.journal.core.data.flight.events;
+
+import "com/zenith/loyalty/journal/core/data/flight/data_model.proto";
+import "com/zenith/loyalty/journal/core/data/reward/data_model.proto";
+import "google/protobuf/wrappers.proto";
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+  scope: FILE
+  package_name: "com.zenith.loyalty.journal.core.data.flight.events"
+  flat_package: true
+  single_file: true
+  java_conversions: false
+  import: "infrastructure.journal.*"
+  preamble: "sealed trait Event extends JournalSerializable"
+  lenses: true
+  getters: true
+  retain_source_code_info: false
+  no_default_values_in_constructor: false
+  preserve_unknown_fields: false
+  enum_value_naming: CAMEL_CASE
+  enum_strip_prefix: false
+  scala3_sources: true
+};
+
+message FlightCreated {
+  option (scalapb.message).extends = "Event";
+
+  google.protobuf.StringValue campaignId = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  google.protobuf.StringValue name = 2 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  google.protobuf.StringValue userId = 3 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  com.zenith.loyalty.journal.core.data.flight.data_model.FlightBudget budget = 4 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  google.protobuf.StringValue targetCriteriaId = 5;
+  
+  com.zenith.loyalty.journal.core.data.flight.data_model.IncentiveConfiguration incentiveConfigurationDirectOfferOld = 6;
+
+  com.zenith.loyalty.journal.core.data.flight.data_model.AdSetup adSetup = 7
+   [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+
+   com.zenith.loyalty.journal.core.data.flight.data_model.IncentiveConfigurationTypeOptional incentiveConfiguration = 8;
+
+   com.zenith.loyalty.journal.core.data.flight.data_model.FlightStatus status = 9
+  ;
+   
+   com.zenith.loyalty.journal.core.data.flight.data_model.FlightType ftype = 10
+  ;
+   
+}
+
+message FlightUpdated {
+  option (scalapb.message).extends = "Event";
+
+  google.protobuf.StringValue name = 1;
+  com.zenith.loyalty.journal.core.data.flight.data_model.FlightBudget budget = 2;
+  google.protobuf.StringValue targetCriteriaId = 3;
+  com.zenith.loyalty.journal.core.data.flight.data_model.IncentiveConfiguration incentiveConfigurationDirectOfferOld = 4;
+  com.zenith.loyalty.journal.core.data.flight.data_model.AdSetupOptional adSetup = 5;
+
+  com.zenith.loyalty.journal.core.data.flight.data_model.IncentiveConfigurationTypeOptional incentiveConfiguration = 6;
+   
+  com.zenith.loyalty.journal.core.data.flight.data_model.FlightStatusOptional status = 7;
+  
+}
+
+message RewardAdded {
+  option (scalapb.message).extends = "Event";
+
+  com.zenith.loyalty.journal.core.data.reward.data_model.Reward value = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+}

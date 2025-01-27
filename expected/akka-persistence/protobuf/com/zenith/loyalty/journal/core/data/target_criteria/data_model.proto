@@ -1,0 +1,141 @@
+syntax = "proto3";
+
+package com.zenith.loyalty.journal.core.data.target_criteria.data_model;
+
+import "com/zenith/loyalty/journal/core/data/common/data_model.proto";
+import "google/protobuf/wrappers.proto";
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+  scope: FILE
+  package_name: "com.zenith.loyalty.journal.core.data.target_criteria.data_model"
+  flat_package: true
+  single_file: true
+  java_conversions: false
+  import: "infrastructure.journal.*"
+  lenses: true
+  getters: true
+  retain_source_code_info: false
+  no_default_values_in_constructor: false
+  preserve_unknown_fields: false
+  enum_value_naming: CAMEL_CASE
+  enum_strip_prefix: false
+  scala3_sources: true
+};
+
+message TargetCriteria {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  google.protobuf.StringValue name = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  google.protobuf.StringValue userId = 2 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  Priority priority = 3;
+  google.protobuf.DoubleValue treatmentGroupPercentage = 4;
+  google.protobuf.DoubleValue controlGroupPercentage = 5;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListIntOptional lastDigitAccountNumbers = 6;
+  ListAgeRangeOptional ageRanges = 7;
+  ListLocationRuleOptional locationRules = 8;
+  ListSpendingRuleOptional spendingRules = 9;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional bins = 10;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional programs = 11;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional includedDistributors = 12;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional excludedDistributors = 13;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional productTypes = 14;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional associations = 15;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional issuingBanks = 16;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional marketingTags = 17;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional directAudience = 18;
+}
+
+message ListLocationRuleOptional {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  repeated LocationRule value = 1;
+}
+
+message ListSpendingRuleOptional {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  repeated SpendingRule value = 1;
+}
+
+message ListAgeRangeOptional {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  repeated AgeRange value = 1;
+}
+
+message AgeRange {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  google.protobuf.Int32Value from = 1;
+  google.protobuf.Int32Value to = 2;
+}
+
+message LocationRule {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  LocationCriteria criteria = 1;
+  google.protobuf.BoolValue included = 2 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  repeated google.protobuf.StringValue values = 3;
+}
+
+message SpendingRule {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  SpendingCondition condition = 1;
+  SpendingCriteria criteria = 2;
+  com.zenith.loyalty.journal.core.data.common.data_model.Amount value = 3 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  WithinLast withinLast = 4;
+  repeated google.protobuf.StringValue merchantNames = 5;
+  repeated google.protobuf.StringValue merchantCategories = 6;
+}
+
+enum SpendingCondition {
+  GREATER_THAN = 0;
+  EQUALS_TO = 1;
+  LESS_THAN = 2;
+}
+
+enum SpendingCriteria {
+  TRANSACTION_AMOUNT = 0;
+  TRANSACTION_COUNT = 1;
+}
+
+enum WithinLast {
+  p7d = 0;
+  p30d = 1;
+  p90d = 2;
+}
+
+message PriorityOptional {
+  option (scalapb.message).extends = "JournalSerializable";
+
+  Priority value = 1;
+}
+
+enum Priority {
+  LOW = 0;
+  MEDIUM_LOW = 1;
+  MEDIUM = 2;
+  MEDIUM_HIGH = 3;
+  HIGH = 4;
+}
+
+enum LocationCriteria {
+  STATE = 0;
+  CITY = 1;
+  ZIP_CODE = 2;
+  MSA = 3;
+}

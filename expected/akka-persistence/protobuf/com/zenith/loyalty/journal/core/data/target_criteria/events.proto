@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+package com.zenith.loyalty.journal.core.data.target_criteria.events;
+
+import "com/zenith/loyalty/journal/core/data/common/data_model.proto";
+import "com/zenith/loyalty/journal/core/data/target_criteria/data_model.proto";
+import "google/protobuf/wrappers.proto";
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+  scope: FILE
+  package_name: "com.zenith.loyalty.journal.core.data.target_criteria.events"
+  flat_package: true
+  single_file: true
+  java_conversions: false
+  import: "infrastructure.journal.*"
+  preamble: "sealed trait Event extends JournalSerializable"
+  lenses: true
+  getters: true
+  retain_source_code_info: false
+  no_default_values_in_constructor: false
+  preserve_unknown_fields: false
+  enum_value_naming: CAMEL_CASE
+  enum_strip_prefix: false
+  scala3_sources: true
+};
+
+message TargetCriteriaCreated {
+  option (scalapb.message).extends = "Event";
+
+  google.protobuf.StringValue name = 1 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  google.protobuf.StringValue userId = 2 [
+    (scalapb.field).no_box = true,
+    (scalapb.field).required = true
+  ];
+  com.zenith.loyalty.journal.core.data.target_criteria.data_model.Priority priority = 3;
+  google.protobuf.DoubleValue treatmentGroupPercentage = 4;
+  google.protobuf.DoubleValue controlGroupPercentage = 5;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListIntOptional lastDigitAccountNumbers = 6;
+  com.zenith.loyalty.journal.core.data.target_criteria.data_model.ListAgeRangeOptional ageRanges = 7;
+  com.zenith.loyalty.journal.core.data.target_criteria.data_model.ListLocationRuleOptional locationRules = 8;
+  com.zenith.loyalty.journal.core.data.target_criteria.data_model.ListSpendingRuleOptional spendingRules = 9;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional bins = 10;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional programs = 11;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional includedDistributors = 12;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional excludedDistributors = 13;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional productTypes = 14;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional associations = 15;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional issuingBanks = 16;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional marketingTags = 17;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional directAudience = 18;
+}
+
+message TargetCriteriaUpdated {
+  option (scalapb.message).extends = "Event";
+
+  com.zenith.loyalty.journal.core.data.target_criteria.data_model.PriorityOptional priority = 1;
+  google.protobuf.DoubleValue treatmentGroupPercentage = 2;
+  google.protobuf.DoubleValue controlGroupPercentage = 3;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListIntOptional lastDigitAccountNumbers = 4;
+  com.zenith.loyalty.journal.core.data.target_criteria.data_model.ListAgeRangeOptional ageRanges = 5;
+  com.zenith.loyalty.journal.core.data.target_criteria.data_model.ListLocationRuleOptional locationRules = 6;
+  com.zenith.loyalty.journal.core.data.target_criteria.data_model.ListSpendingRuleOptional spendingRules = 7;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional bins = 8;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional programs = 9;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional includedDistributors = 10;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional excludedDistributors = 11;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional productTypes = 12;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional associations = 13;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional issuingBanks = 14;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional marketingTags = 15;
+  com.zenith.loyalty.journal.core.data.common.data_model.ListStringOptional directAudience = 16;
+}

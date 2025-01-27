@@ -1,0 +1,18 @@
+
+object DataModel:
+  case class User(name: String, age: Option[Int]) extends Model
+  case class Group(user: User, address: Option[Address]) extends Model
+  
+object DomainModel:
+  sealed trait Model extends CborSerializable
+
+  case class Address(ids: List[User], associations: Option[List[String]], user: User) extends Model
+//   case class GlobalRegistered(id: Option[Priority], p: Priority)
+
+//   enum UserTypes extends Model:
+//     case Anonymous(id: Int)
+//     case Registered(id: Option[Priority], p: Priority)
+  
+//   enum Priority(val id: String) extends Model:
+//       case Low        extends Priority("low")
+//       case High       extends Priority("high")

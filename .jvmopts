@@ -1,0 +1,7 @@
+-XX:MaxMetaspaceSize=4g
+-XX:ReservedCodeCacheSize=2g
+-Xms3g
+-Xmx15g
+-XshowSettings:vm
+-Xss10m
+-Dlmcoursier.internal.shaded.coursier.ttl=0s
