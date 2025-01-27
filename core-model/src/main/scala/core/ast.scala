@@ -23,4 +23,10 @@ object AST:
       name: String,
       methods: List[Method],
 
-     ) extends ASTNode
+     ) extends ASTNode:
+      def other(
+                 a: String,
+                 b: String
+               )(
+                 c: String,
+                 d: String) = a + b + c
