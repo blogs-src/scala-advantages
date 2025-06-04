@@ -13,9 +13,7 @@ class EnumsTest extends munit.FunSuite {
         EnumCasePair("MediumLow", "medium_low"),
         EnumCasePair("Medium", "medium"),
         EnumCasePair("MediumHigh", "medium_high"),
-        EnumCasePair("High", "high"),
-      ),
-    ))
+        EnumCasePair("High", "high"))))
     assertEquals(
       result,
       """
@@ -26,8 +24,7 @@ class EnumsTest extends munit.FunSuite {
         |  MEDIUM_HIGH = 3;
         |  HIGH = 4;
         |}
-        |""".stripMargin,
-    )
+        |""".stripMargin)
   }
 
 }

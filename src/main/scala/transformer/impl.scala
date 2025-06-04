@@ -6,7 +6,9 @@ object Impl:
 
    class EnumTransformer extends Interface.EnumTransformer:
 
-      def simpleEnum(t: SimpleEnum): String =
+      def simpleEnum(
+        t: SimpleEnum,
+      ): String =
          val r = t.values.zipWithIndex.map:
               case (v, i) => f"${v.str.toUpperCase()} = ${i};"
          val s = r.mkString("\n  ")
@@ -18,5 +20,6 @@ object Impl:
 
    class SimpleServiceTransformer extends Interface.TraitServiceTransformer:
 
-      def service(t: SimpleService): String =
-        ""
+      def service(
+        t: SimpleService,
+      ): String = ""

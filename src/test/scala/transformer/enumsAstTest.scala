@@ -20,14 +20,13 @@ class EnumsAstTest extends munit.FunSuite {
     val result = obj.processEnumSrc(src)
     assertEquals(
       result,
-      Some(SimpleEnum("Priority", List(
-        EnumCasePair("Low", "low"),
-        EnumCasePair("MediumLow", "medium_low"),
-        EnumCasePair("Medium", "medium"),
-        EnumCasePair("MediumHigh", "medium_high"),
-        EnumCasePair("High", "high"),
-      )))
-    )
+      Some(SimpleEnum("Priority",
+                      List(
+                        EnumCasePair("Low", "low"),
+                        EnumCasePair("MediumLow", "medium_low"),
+                        EnumCasePair("Medium", "medium"),
+                        EnumCasePair("MediumHigh", "medium_high"),
+                        EnumCasePair("High", "high")))))
   }
 
 }

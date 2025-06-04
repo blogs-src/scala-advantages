@@ -5,7 +5,13 @@ import core.AST.*
 object Interface:
 
    trait EnumTransformer:
-      def simpleEnum(t: SimpleEnum): String
+
+      def simpleEnum(
+        t: SimpleEnum,
+      ): String
 
    trait TraitServiceTransformer:
-     def service(t: SimpleService): String
+
+      def service(
+        t: SimpleService,
+      ): String
