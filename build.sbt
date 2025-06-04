@@ -1,4 +1,4 @@
-lazy val scala3Version = "3.7.0"
+lazy val scala3Version = "3.7.1"
 lazy val scala2Version = "2.13.16"
 lazy val scalametaVersion = "4.13.6"
 lazy val munitVersion = "1.1.1"

@@ -44,7 +44,7 @@ class Extractor {
       case Decl.Def.After_4_7_3(
       _lmod,
       Term.Name(methodName),
-      paramsGroup, // get params group
+      paramsGroup,
       rtype,
       ) =>
         Some(Method(methodName, processParameters(paramsGroup), processReturnType(rtype)))
