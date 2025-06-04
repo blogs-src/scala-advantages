@@ -26,8 +26,13 @@ object AST:
      value: String,
      str:   String)
 
+   case class Parameter(
+                     name: String,
+                     resType: AstType)
+
    case class Method(
-     name:    String,
+     name:   String,
+     params: Option[List[Parameter]],
      resType: AstType)
 
    trait ASTNode

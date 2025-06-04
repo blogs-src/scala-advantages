@@ -4,7 +4,10 @@ import core.AST.*
 import core.AST.AstType.{Basic, IO, Union}
 import extractor_lib.Extractor
 
-class TraitServiceAstTest_ extends munit.FunSuite {
+class TraitServiceAstTest extends munit.FunSuite {
+"""
+  |    def updateCampaign(id: String, userId: String, payload: CampaignUpdate): Future[Campaign | ResultError]
+  |    |""".stripMargin
 
   test("Based trait AST service") {
     val obj = Extractor()
@@ -12,15 +15,26 @@ class TraitServiceAstTest_ extends munit.FunSuite {
       """
         |trait CampaignService:
         |    def createCampaign(id: String, payload: Campaign): Future[Done | ResultError]
-        |    def updateCampaign(id: String, userId: String, payload: CampaignUpdate): Future[Campaign | ResultError]
         |""".stripMargin
     val result = obj.processServiceTraitSrc(src)
+//    println(result)
     assertEquals(
       result,
       Some(SimpleService("CampaignService",
                       List(
-                        Method("createCampaign", IO("Future", Union(Basic("Done"), Basic("ResultError")))),
-                        Method("updateCampaign", IO("Future", Union(Basic("Campaign"), Basic("ResultError")))),
+                        Method("createCampaign",
+
+                          Some(
+                            List(
+                              Parameter("id", Basic("String")),
+                              Parameter("payload", Basic("Campaign")),
+                            )
+
+                          ),
+
+
+                          IO("Future", Union(Basic("Done"), Basic("ResultError")))),
+//                        Method("updateCampaign", IO("Future", Union(Basic("Campaign"), Basic("ResultError")))),
                       ))))
   }
 

@@ -3,7 +3,7 @@ package demo
 import extractor_lib.Extractor
 
 @main def hello(): Unit = {
-  val src =
+  val src = {
     """
     |   enum Priority(val id: String) extends Model:
     |      case Low         extends Priority("low")
@@ -12,6 +12,10 @@ import extractor_lib.Extractor
     |      case MediumHigh  extends Priority("medium_high")
     |      case High        extends Priority("high")
     |""".stripMargin
-  val r = Extractor().processEnumSrc(src)
-  println(r)
+//  val r = Extractor().processEnumSrc(src)
+//  println(r)
+    val l = List()
+//    println(l.isEmpty)
+    println(Option(l).filterNot(_.isEmpty))
+  }
 }

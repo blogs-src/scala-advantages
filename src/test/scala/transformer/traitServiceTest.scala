@@ -1,6 +1,7 @@
 package transformer
 
 import core.AST.*
+import core.AST.AstType.Basic
 
 class TraitServiceTest extends munit.FunSuite {
 
@@ -10,8 +11,9 @@ class TraitServiceTest extends munit.FunSuite {
       "CampaignService",
       List(
         Method(name = "createCampaign",
-               resType = AstType.Union(a = AstType.Basic("Done"),
-                                       b = AstType.Basic("ResultError"))))))
+               params = Some(List(Parameter("a", Basic("Int")), Parameter("a", Basic("Int")))),
+               resType = AstType.Union(a = Basic("Done"),
+                                       b = Basic("ResultError"))))))
     assertEquals(
       result,
       """

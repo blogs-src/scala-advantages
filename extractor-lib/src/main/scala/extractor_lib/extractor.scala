@@ -11,8 +11,20 @@ import core.AST._
 
 class Extractor {
 
+  def processParameter(param: Term.Param): Parameter = {
+    param match {
+      case Term.Param(_b, Name(c), Some(Type.Name(x)), _y) =>
+        Parameter(c, Basic(x))
+    }
+
+  }
+  def  processParameters(paramsGroup: List[Member.ParamClauseGroup]): Option[List[Parameter]] = {
+    Option(paramsGroup).filterNot(_.isEmpty).map(_.head).map{
+      case Member.ParamClauseGroup(_a, List(Term.ParamClause(b,_x))) => b.map(processParameter)
+    }
+  }
+
   def processReturnType(t: Type): AstType = {
-    IO("Future", Union(Basic("Done"), Basic("ResultError")))
     t match{
       case Type.Apply.After_4_6_0(
           Type.Name(name),
@@ -26,17 +38,16 @@ class Extractor {
 
     }
   }
-
   def processServiceMethod(t: Decl.Def): Option[Method] =
 
     t match {
       case Decl.Def.After_4_7_3(
       _lmod,
       Term.Name(methodName),
-      _paramsGroup, // get params group
+      paramsGroup, // get params group
       rtype,
       ) =>
-        Some(Method(methodName, processReturnType(rtype)))
+        Some(Method(methodName, processParameters(paramsGroup), processReturnType(rtype)))
       case _ => None
     }
 
